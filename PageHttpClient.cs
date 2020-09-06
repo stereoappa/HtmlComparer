@@ -1,5 +1,5 @@
 ﻿using HtmlAgilityPack;
-using MetaComparer.Model;
+using HtmlComparer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace MetaComparer.Model
+namespace HtmlComparer.Model
 {
     public class PageHttpClient
     {

@@ -1,13 +1,9 @@
-﻿using MetaComparer.Model;
-using System;
+﻿using HtmlComparer.Model;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
-namespace MetaComparer
+namespace HtmlComparer
 {
     public class CompareFieldsSection : IConfigurationSectionHandler
     {

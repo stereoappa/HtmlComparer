@@ -1,15 +1,15 @@
-﻿using MetaComparer.Model;
+﻿using HtmlComparer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MetaComparer
+namespace HtmlComparer
 {
     public class UriComparer
     {
-        public ICompareResult Compare(PageResponse pageInfo)
+        public ICompareResult Compare(Model.PageResponse pageInfo)
         {
             var res = pageInfo.RequestedUri.LocalPath.ToLower() == pageInfo.ReturnedUri.LocalPath;
 
@@ -19,10 +19,10 @@ namespace MetaComparer
 
     public class UriCompareResult : ICompareResult
     {
-        public PageResponse Page { get;  }
+        public Model.PageResponse Page { get;  }
 
         public bool IsEquals { get; }
-        public UriCompareResult(PageResponse page, bool uriIsEquals)
+        public UriCompareResult(Model.PageResponse page, bool uriIsEquals)
         {
             Page = page;
             IsEquals = uriIsEquals;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MetaComparer.Model
+namespace HtmlComparer.Model
 {
     public interface ICompareResult
     {

@@ -1,4 +1,4 @@
-﻿using MetaComparer.Model;
+﻿using HtmlComparer.Model;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace MetaComparer
+namespace HtmlComparer
 {
     public class SourcesSection : IConfigurationSectionHandler
     {

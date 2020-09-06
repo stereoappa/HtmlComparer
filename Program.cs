@@ -1,11 +1,11 @@
-﻿using MetaComparer.Model;
-using MetaComparer.Services;
+﻿using HtmlComparer.Model;
+using HtmlComparer.Services;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
 
-namespace MetaComparer
+namespace HtmlComparer
 {
     class Program
     {

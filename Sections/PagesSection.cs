@@ -1,9 +1,9 @@
-﻿using MetaComparer.Model;
+﻿using HtmlComparer.Model;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Xml;
 
-namespace MetaComparer
+namespace HtmlComparer
 {
     public class PagesSection : IConfigurationSectionHandler
     {

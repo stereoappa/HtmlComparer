@@ -1,17 +1,17 @@
 ﻿using HtmlAgilityPack;
-using MetaComparer.Model;
+using HtmlComparer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MetaComparer
+namespace HtmlComparer
 {
     public class FieldComparer
     {
        
-        public ICompareResult Compare(PageResponse origin, PageResponse target, List<ComparedField> compareFields)
+        public ICompareResult Compare(Model.PageResponse origin, Model.PageResponse target, List<ComparedField> compareFields)
         {
             var unequalFields = new List<TagValue>();
             var page1Attributes = origin.FindTagValues(compareFields);
@@ -25,7 +25,7 @@ namespace MetaComparer
 
     public class FieldCompareResult : ICompareResult
     {
-        public FieldCompareResult(PageResponse pageInfo1, PageResponse pageInfo2, List<TagValue> unequalAttrs)
+        public FieldCompareResult(Model.PageResponse pageInfo1, Model.PageResponse pageInfo2, List<TagValue> unequalAttrs)
         {
             Page1 = pageInfo1;
             Page2 = pageInfo2;
@@ -33,8 +33,8 @@ namespace MetaComparer
         }
 
         public List<TagValue> UnequalAttributes { get; }
-        public PageResponse Page1 { get; }
-        public PageResponse Page2 { get; }
+        public Model.PageResponse Page1 { get; }
+        public Model.PageResponse Page2 { get; }
         public bool IsEquals => UnequalAttributes.Count() == 0;
 
         public override string ToString()

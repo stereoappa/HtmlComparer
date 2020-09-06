@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9EF97FEC-3791-48D0-89E5-F6B0D5B16EBF}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>MetaComparer</RootNamespace>
-    <AssemblyName>MetaComparer</AssemblyName>
+    <RootNamespace>HtmlComparer</RootNamespace>
+    <AssemblyName>HtmlComparer</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -48,9 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HtmlNodeExtensions.cs" />
+    <Compile Include="Model\FlatHtmlNode.cs" />
     <Compile Include="Services\Comparers\FieldComparer.cs" />
     <Compile Include="Services\Comparers\HtmlOutlineComparer.cs" />
-    <Compile Include="Model\CompareResult.cs" />
+    <Compile Include="Model\ICompareResult.cs" />
     <Compile Include="Model\Page.cs" />
     <Compile Include="Model\ComparedField.cs" />
     <Compile Include="Model\Source.cs" />
