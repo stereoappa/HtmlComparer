@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace HtmlComparer.Model
 {
@@ -13,9 +9,5 @@ namespace HtmlComparer.Model
         public bool ReturnUrlIsLowerCase { get; set; }
     }
 
-    public enum CompareRole
-    {
-        Origin,
-        Target
-    }
+    
 }

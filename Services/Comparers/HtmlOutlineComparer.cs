@@ -1,20 +1,18 @@
-﻿using HtmlAgilityPack;
-using HtmlComparer.Model;
+﻿using HtmlComparer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HtmlComparer
+
+namespace HtmlComparer.Comparers
 {
-    public class HtmlOutlineComparer
+    public class HtmlOutlineComparer : IPageComparer
     {
         private const string headers = "//*[self::h1 or self::h2 or self::h3 or self::h4]";
         public ICompareResult Compare(PageResponse origin, PageResponse target)
         {
-            var originNodes = origin.FindNodesByXpath(headers).ToFlatHtmlNodes().ToList();
-            var targetNodes = target.FindNodesByXpath(headers).ToFlatHtmlNodes().ToList();
+            var originNodes = origin.FindNodesByXpath(headers).ToSimpleOutlineNodes().ToList();
+            var targetNodes = target.FindNodesByXpath(headers).ToSimpleOutlineNodes().ToList();
 
             var badNodes = originNodes.Except(targetNodes);
 
@@ -24,28 +22,29 @@ namespace HtmlComparer
 
     public class HtmlOutlineCompareResult : ICompareResult
     {
-        private List<FlatHtmlNode> originNodes;
-        private List<FlatHtmlNode> targetNodes;
-        private List<FlatHtmlNode> badNodes;
-        private Uri source;
+        public Uri OriginPage { get; }
 
-        public HtmlOutlineCompareResult(Uri source, IEnumerable<FlatHtmlNode> originNodes, IEnumerable<FlatHtmlNode> targetNodes, IEnumerable<FlatHtmlNode> badNodes)
+        private List<OutlineNode> originNodes;
+        private List<OutlineNode> targetNodes;
+        private List<OutlineNode> badNodes;
+
+        public HtmlOutlineCompareResult(Uri source, IEnumerable<OutlineNode> originNodes, IEnumerable<OutlineNode> targetNodes, IEnumerable<OutlineNode> badNodes)
         {
             this.originNodes = originNodes.ToList();
             this.targetNodes = targetNodes.ToList();
             this.badNodes = badNodes.ToList();
-            this.source = source;
+            this.OriginPage = source;
         }
 
-        public bool IsEquals => !badNodes.Any();
+        public bool HasErrors => badNodes.Any(); 
 
         public override string ToString()
         {
-            string res = $"Source: {source.LocalPath}";
+            string res = $"\tHTML OUTLINE COMPARER: ";
 
-            if (IsEquals)
+            if (!HasErrors)
             {
-                return "OK: Page outlines is identical";
+                return res += "OK: Page outlines is identical\r\n";
             }
 
             for (int i = 0; i < badNodes.Count(); i++)
@@ -54,8 +53,8 @@ namespace HtmlComparer
                 var originNode = originNodes[i];
                 var expecteNode = targetNodes.FirstOrDefault(x => x.Position == badNode.Position);
 
-                res += $"\r\nERROR: At index {badNode.Position} expected value\r\n<{originNode.Tag}: {originNode.Text}>," +
-                    $" but received\r\n<{expecteNode?.Tag ?? "EMPTY"}: {expecteNode?.Text ?? "EMPTY"}>\r\n";
+                res += $"\r\n\tERROR: At index {badNode.Position} expected value\r\n\t<{originNode.Tag}: {originNode.Text}>," +
+                    $" but received\r\n\t<{expecteNode?.Tag ?? "EMPTY"}: {expecteNode?.Text ?? "EMPTY"}>\r\n";
             }
 
             return res;

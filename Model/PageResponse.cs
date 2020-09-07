@@ -1,10 +1,6 @@
 ﻿using HtmlAgilityPack;
-using HtmlComparer.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace HtmlComparer.Model
@@ -16,7 +12,7 @@ namespace HtmlComparer.Model
 
         public HtmlDocument ReturnedHtmlDocument { get; set; }
 
-        public List<TagValue> FindTagValues(List<ComparedField> compareFields)
+        public List<TagValue> FindTagValues(List<ComparedTag> compareFields)
         {
             string toLowerCase(string arg)
             {

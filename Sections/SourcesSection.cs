@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace HtmlComparer
+namespace HtmlComparer.Sections
 {
     public class SourcesSection : IConfigurationSectionHandler
     {

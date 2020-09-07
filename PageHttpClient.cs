@@ -2,12 +2,10 @@
 using HtmlComparer.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace HtmlComparer.Model
+namespace HtmlComparer
 {
     public class PageHttpClient
     {
@@ -18,9 +16,9 @@ namespace HtmlComparer.Model
         public PageHttpClient()
         {
             _web = new HtmlWeb();
+
             _factory = new TaskFactory<HtmlDocument>();
             _cache = new Dictionary<Uri, PageResponse>();
-
         }
 
         public async Task<PageResponse> GetResponse(Uri uri)
@@ -36,7 +34,6 @@ namespace HtmlComparer.Model
             {
                 throw new HttpException(404, "Page not found");
             }
-
 
             var response = new PageResponse
             {

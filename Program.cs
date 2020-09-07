@@ -2,8 +2,9 @@
 using HtmlComparer.Services;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.Linq;
 using System.Threading.Tasks;
+using HtmlComparer.Comparers;
 
 namespace HtmlComparer
 {
@@ -11,33 +12,60 @@ namespace HtmlComparer
     {
         static async Task Main(string[] args)
         {
-            List<Source> _sources = ConfigurationManager.GetSection("sources") as List<Source>;
-            List<Page> _pages = ConfigurationManager.GetSection("pages") as List<Page>;
-            List<ComparedField> _compareFields = ConfigurationManager.GetSection("compareFields") as List<ComparedField>;
+            var sources = ConfigProvider.GetSource();
+            var pages = ConfigProvider.GetPages();
+            var compareTags = ConfigProvider.GetCompareTags();
+
+            var comparers = new List<IPageComparer>
+            {
+                new TagComparer(compareTags),
+                new HtmlOutlineComparer()
+            };
+            var compareService = new CompareService(comparers, sources, pages);
+
             Console.WriteLine("Comparison started..");
 
-            var _compareService = new CompareService(_sources);
+            IEnumerable<ICompareResult> comparerResults = null;
+            try
+            {
+                comparerResults = await compareService.Compare();
+                var withRewriteRuleResults = await compareService.CheckRewriteRule();
+                comparerResults = comparerResults.Union(withRewriteRuleResults);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"FATAL ERROR: {ex.Message}");
+            }
 
-            var fieldReport = await _compareService.CompareByFields(_pages, _compareFields);
-            WriteReport(fieldReport, "-- FIELD COMPARER RESULT --");
+            WriteReport(comparerResults);
 
-            var urlReport = await _compareService.CheckReturnUrl(_pages);
-            WriteReport(urlReport, "-- URL COMPARER RESULT --");
-
-            var htlOutlineReport = await _compareService.CompareByHtmlOutline(_pages);
-            WriteReport(htlOutlineReport, "-- HTML OUTLINE COMPARER RESULT --");
-
-            Console.WriteLine("Done!");
+            Console.WriteLine("Html compared is done!");
             Console.ReadKey();
         }
 
-        static void WriteReport(List<ICompareResult> report, string title = "")
+        static void WriteReport(IEnumerable<ICompareResult> reports)
+        {
+
+            foreach (var group in reports.GroupBy(x => x.OriginPage.LocalPath.ToLower()))
+            {
+                var resultForSource = group.Select(g => g);
+                WriteCompareResults(resultForSource, $"Source: {group.Key}");
+            }
+        }
+
+        static void WriteCompareResults(IEnumerable<ICompareResult> results, string title)
         {
             if (!string.IsNullOrEmpty(title))
             {
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine($"{title}\r\n");
             }
-            report.ForEach(r => Console.WriteLine(r));
+
+            foreach (var r in results)
+            {
+                Console.ForegroundColor = r.HasErrors ? ConsoleColor.Red : ConsoleColor.White;
+                Console.WriteLine(r.ToString(), ConsoleColor.Red);
+            }
         }
     }
 }

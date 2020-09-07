@@ -1,20 +1,16 @@
 ﻿using HtmlAgilityPack;
 using HtmlComparer.Model;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HtmlComparer
 {
     public static class HtmlNodeExtensions
     {
-        public static IEnumerable<FlatHtmlNode> ToFlatHtmlNodes (this HtmlNodeCollection collection)
+        public static IEnumerable<OutlineNode> ToSimpleOutlineNodes (this HtmlNodeCollection collection)
         {
             for (int i = 0; i < collection.Count; i++)
             {
-                yield return new FlatHtmlNode
+                yield return new OutlineNode
                 {
                     Position = i,
                     Tag = collection[i].Name,

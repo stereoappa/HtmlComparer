@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Xml;
 
-namespace HtmlComparer
+namespace HtmlComparer.Sections
 {
     public class CompareFieldsSection : IConfigurationSectionHandler
     {
         public object Create(object parent, object configContext, XmlNode section)
         {
-            List<ComparedField> myConfigObject = new List<ComparedField>();
+            List<ComparedTag> myConfigObject = new List<ComparedTag>();
 
             foreach (XmlNode childNode in section.ChildNodes)
             {
-                var r = new ComparedField();
+                var r = new ComparedTag();
 
                 r.Tag = childNode.Attributes["tag"] != null ? childNode.Attributes["tag"].Value : null;
                 r.Name = childNode.Attributes["name"] != null ? childNode.Attributes["name"].Value : null;

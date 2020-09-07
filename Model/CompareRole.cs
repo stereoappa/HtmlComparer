@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace HtmlComparer.Model
 {
-    public class ComparedField
+    public enum CompareRole
     {
-        public string Tag { get; set; }
-        public string Name { get; set; }
-        public string Attr { get; set; }
+        Origin,
+        Target
     }
 }

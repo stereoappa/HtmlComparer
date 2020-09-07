@@ -1,48 +1,46 @@
 ﻿using HtmlComparer.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HtmlComparer
+namespace HtmlComparer.Comparers
 {
-    public class UriComparer
+    public class UriRewriteChecker
     {
-        public ICompareResult Compare(Model.PageResponse pageInfo)
+        public ICompareResult Compare(PageResponse target)
         {
-            var res = pageInfo.RequestedUri.LocalPath.ToLower() == pageInfo.ReturnedUri.LocalPath;
+            var res = target.RequestedUri.LocalPath.ToLower() == target.ReturnedUri.LocalPath;
 
-            return new UriCompareResult(pageInfo, res);
+            return new UriCompareResult(target, res);
         }
     }
 
     public class UriCompareResult : ICompareResult
     {
-        public Model.PageResponse Page { get;  }
+        private PageResponse _page;
 
-        public bool IsEquals { get; }
-        public UriCompareResult(Model.PageResponse page, bool uriIsEquals)
+        public bool HasErrors { get; }
+        public Uri OriginPage => _page.RequestedUri;
+
+        public UriCompareResult(PageResponse page, bool uriIsEquals)
         {
-            Page = page;
-            IsEquals = uriIsEquals;
+            _page = page;
+            HasErrors = !uriIsEquals;
         }
 
         public override string ToString()
         {
-            string res = $"Source: {Page.RequestedUri.LocalPath}:\r\n";
-            if(!IsEquals)
+            string res = $"\tURI COMPARER: ";
+            if (HasErrors)
             {
-                res += $"------- ERROR: Return Uri is incorrect {Page.RequestedUri.LocalPath}\r\n";
-                return res;  
-            } 
+                res += $"\r\n\tERROR: Return Uri is incorrect {_page.RequestedUri.LocalPath}\r\n";
+                return res;
+            }
             else
             {
-                res += "------- OK: Return Url is lower case\r\n";
+                res += "OK: Return Url is lower case\r\n";
                 return res;
             }
 
-           
+
         }
     }
 }
