@@ -38,7 +38,7 @@ namespace HtmlComparer
                 Console.WriteLine($"FATAL ERROR: {ex.Message}");
             }
 
-            Console.WriteLine("Html compare had done!");
+            Console.WriteLine("Html comparison done!");
             Console.ReadKey();
         }
 
