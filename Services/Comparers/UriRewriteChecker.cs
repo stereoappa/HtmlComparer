@@ -9,18 +9,18 @@ namespace HtmlComparer.Comparers
         {
             var res = target.RequestedUri.LocalPath.ToLower() == target.ReturnedUri.LocalPath;
 
-            return new UriCompareResult(target, res);
+            return new UriRewriteCheckerResult(target, res);
         }
     }
 
-    public class UriCompareResult : ICompareResult
+    public class UriRewriteCheckerResult : ICompareResult
     {
         private PageResponse _page;
 
         public bool HasErrors { get; }
         public Uri OriginPage => _page.RequestedUri;
 
-        public UriCompareResult(PageResponse page, bool uriIsEquals)
+        public UriRewriteCheckerResult(PageResponse page, bool uriIsEquals)
         {
             _page = page;
             HasErrors = !uriIsEquals;

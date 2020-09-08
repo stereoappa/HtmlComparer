@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Web;
 
 namespace HtmlComparer.Model
@@ -9,6 +10,8 @@ namespace HtmlComparer.Model
     {
         public Uri ReturnedUri { get; set; }
         public Uri RequestedUri { get; set; }
+
+        public HttpStatusCode StatusCode { get; set; }
 
         public HtmlDocument ReturnedHtmlDocument { get; set; }
 

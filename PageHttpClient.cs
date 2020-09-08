@@ -30,15 +30,11 @@ namespace HtmlComparer
 
             var doc = await _factory.StartNew(() => _web.Load(uri.ToString()));
 
-            if (doc == null)
-            {
-                throw new HttpException(404, "Page not found");
-            }
-
             var response = new PageResponse
             {
                 RequestedUri = uri,
                 ReturnedHtmlDocument = doc,
+                StatusCode = _web.StatusCode,
                 ReturnedUri = _web.ResponseUri
             };
 

@@ -6,5 +6,7 @@ namespace HtmlComparer.Model
     {
         Uri OriginPage { get; }
         bool HasErrors { get; }
+
+        string ToString();
     }
 }

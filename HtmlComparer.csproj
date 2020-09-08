@@ -67,7 +67,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sections\SourcesSection.cs" />
     <Compile Include="Services\CompareService.cs" />
-    <Compile Include="Services\Comparers\UriComparer.cs" />
+    <Compile Include="Services\Comparers\UriRewriteChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

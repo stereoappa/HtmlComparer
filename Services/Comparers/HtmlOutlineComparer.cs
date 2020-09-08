@@ -11,7 +11,7 @@ namespace HtmlComparer.Comparers
         private const string headers = "//*[self::h1 or self::h2 or self::h3 or self::h4]";
         public ICompareResult Compare(PageResponse origin, PageResponse target)
         {
-            var originNodes = origin.FindNodesByXpath(headers).ToSimpleOutlineNodes().ToList();
+            var originNodes = origin.FindNodesByXpath(headers).ToSimpleOutlineNodes(true).ToList();
             var targetNodes = target.FindNodesByXpath(headers).ToSimpleOutlineNodes().ToList();
 
             var badNodes = originNodes.Except(targetNodes);
@@ -51,10 +51,10 @@ namespace HtmlComparer.Comparers
             {
                 var badNode = badNodes[i];
                 var originNode = originNodes[i];
-                var expecteNode = targetNodes.FirstOrDefault(x => x.Position == badNode.Position);
+                var expectedNode = targetNodes.FirstOrDefault(x => x.Position == badNode.Position);
 
                 res += $"\r\n\tERROR: At index {badNode.Position} expected value\r\n\t<{originNode.Tag}: {originNode.Text}>," +
-                    $" but received\r\n\t<{expecteNode?.Tag ?? "EMPTY"}: {expecteNode?.Text ?? "EMPTY"}>\r\n";
+                    $" but received\r\n\t<{expectedNode?.Tag ?? "EMPTY"}: {expectedNode?.Text ?? "EMPTY"}>\r\n";
             }
 
             return res;

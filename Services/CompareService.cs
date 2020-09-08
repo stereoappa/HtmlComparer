@@ -1,7 +1,9 @@
 ﻿using HtmlComparer.Comparers;
 using HtmlComparer.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace HtmlComparer.Services
@@ -30,9 +32,14 @@ namespace HtmlComparer.Services
                 var origin = await _client.GetResponse(
                     _originSource.BaseUrl,
                     page.Path);
+
+                ThrowIfPageNotFound(origin);
+
                 var target = await _client.GetResponse(
                     _targetSource.BaseUrl,
                     page.Path);
+
+                ThrowIfPageNotFound(target); 
 
                 res.Add(comparer.Compare(origin, target));
             }
@@ -58,6 +65,14 @@ namespace HtmlComparer.Services
             res.Add(new UriRewriteChecker().Compare(pi));
 
             return res;
+        }
+        
+        private void ThrowIfPageNotFound(PageResponse resp)
+        {
+            if (resp.StatusCode != HttpStatusCode.OK)
+            {
+                throw new WebException($"Source: {resp.RequestedUri}\r\n\tHTTP ERROR: Status code: {(int)resp.StatusCode}. The page is not accepted for comparison");
+            }
         }
     }
 }
