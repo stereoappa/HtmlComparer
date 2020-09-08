@@ -25,15 +25,11 @@ namespace HtmlComparer
 
             Console.WriteLine("Comparison started..");
 
-            IEnumerable<ICompareResult> comparerReport = null;
             try
             {
                 foreach (var page in pages)
                 {
-                    comparerReport = await compareService.Compare(page);
-                    var withRewriteRuleResults = await compareService.CheckRewriteRule(page);
-                    comparerReport = comparerReport.Union(withRewriteRuleResults);
-                    WriteReport(comparerReport);
+                    WriteReport(await compareService.GetCompareReport(page));
                 }
                 
             }
@@ -46,10 +42,9 @@ namespace HtmlComparer
             Console.ReadKey();
         }
 
-        static void WriteReport(IEnumerable<ICompareResult> reports)
+        static void WriteReport(IEnumerable<IGrouping<string, ICompareResult>> report)
         {
-
-            foreach (var group in reports.GroupBy(x => x.OriginPage.LocalPath.ToLower()))
+            foreach (var group in report)
             {
                 var resultForSource = group.Select(g => g);
                 WriteCompareResults(resultForSource, $"Source: {group.Key}");

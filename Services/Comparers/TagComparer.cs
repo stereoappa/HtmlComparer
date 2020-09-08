@@ -20,7 +20,7 @@ namespace HtmlComparer.Comparers
 
             unequalFields.AddRange(page1Attributes.Except(page2Attributes, new TagValueComparer()));
 
-            return new FieldCompareResult(origin, target, unequalFields);
+            return new FieldCompareResult(origin, unequalFields);
         }  
     }
 
@@ -29,9 +29,9 @@ namespace HtmlComparer.Comparers
         private PageResponse _response;
         private List<TagValue> _unequalAttributes { get; }
 
-        public FieldCompareResult(PageResponse response, PageResponse pageInfo2, List<TagValue> unequalAttrs)
+        public FieldCompareResult(PageResponse origin, List<TagValue> unequalAttrs)
         {
-            _response = response;
+            _response = origin;
             _unequalAttributes = unequalAttrs;
         }
 

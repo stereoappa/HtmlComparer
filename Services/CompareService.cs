@@ -11,41 +11,42 @@ namespace HtmlComparer.Services
         private readonly PageHttpClient _client = new PageHttpClient();
 
         private readonly IEnumerable<IPagesComparer> _comparers;
-        private readonly IEnumerable<Page> _pages;
         private readonly Source _originSource;
         private readonly Source _targetSource;
 
         public CompareService(IEnumerable<IPagesComparer> comparers, Source originSource, Source targetSource)
         {
             _comparers = comparers;
-            //_pages = pages;
             _originSource = originSource;
             _targetSource = targetSource;
         }
 
-        public async Task<List<ICompareResult>> Compare(Page page)
+        public async Task<IEnumerable<IGrouping<string, ICompareResult>>> GetCompareReport(Page page, bool checkRewriteRule = true)
         {
             var res = new List<ICompareResult>();
 
             foreach (var comparer in _comparers)
             {
-                //foreach (var page in _pages)
-                //{
-                    var origin = await _client.GetResponse(
-                        _originSource.BaseUrl,
-                        page.Path);
-                    var target = await _client.GetResponse(
-                        _targetSource.BaseUrl,
-                        page.Path);
+                var origin = await _client.GetResponse(
+                    _originSource.BaseUrl,
+                    page.Path);
+                var target = await _client.GetResponse(
+                    _targetSource.BaseUrl,
+                    page.Path);
 
-                    res.Add(comparer.Compare(origin, target));
-                //}
+                res.Add(comparer.Compare(origin, target));
             }
+
+            if (checkRewriteRule)
+            {
+                var withRewriteRuleResults = await CheckRewriteRule(page);
+                res.AddRange(withRewriteRuleResults);
+            }           
             
-            return res;
+            return res.GroupBy(x => x.OriginPage.LocalPath.ToLower());
         }
 
-        public async Task<List<ICompareResult>> CheckRewriteRule(Page page)
+        public async Task<IEnumerable<ICompareResult>> CheckRewriteRule(Page page)
         {
             var res = new List<ICompareResult>();
             if (!_targetSource.ReturnUrlIsLowerCase)
@@ -53,11 +54,8 @@ namespace HtmlComparer.Services
                 return res;
             }
 
-           // foreach (var page in _pages)
-            //{
-                var pi = await _client.GetResponse(_targetSource.BaseUrl, page.Path);
-                res.Add(new UriRewriteChecker().Compare(pi));
-            //}
+            var pi = await _client.GetResponse(_targetSource.BaseUrl, page.Path);
+            res.Add(new UriRewriteChecker().Compare(pi));
 
             return res;
         }
