@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppConfigValueProvider.cs" />
+    <Compile Include="AppConfigProvider.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Model\OutlineNode.cs" />
     <Compile Include="Model\IPagesComparer.cs" />
