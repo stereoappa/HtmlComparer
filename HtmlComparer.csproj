@@ -48,10 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigProvider.cs" />
-    <Compile Include="HtmlNodeExtensions.cs" />
-    <Compile Include="Model\FlatHtmlNode.cs" />
-    <Compile Include="Model\IPageComparer.cs" />
+    <Compile Include="AppConfigValueProvider.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Model\OutlineNode.cs" />
+    <Compile Include="Model\IPagesComparer.cs" />
     <Compile Include="Model\CompareRole.cs" />
     <Compile Include="Services\Comparers\TagComparer.cs" />
     <Compile Include="Services\Comparers\HtmlOutlineComparer.cs" />

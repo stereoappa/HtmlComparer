@@ -1,6 +1,6 @@
 ﻿namespace HtmlComparer.Model
 {
-    public interface IPageComparer
+    public interface IPagesComparer
     {
         ICompareResult Compare(PageResponse origin, PageResponse target);
     }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace HtmlComparer
 {
-    public static class HtmlNodeExtensions
+    public static class HtmlNodesExtensions
     {
         public static IEnumerable<OutlineNode> ToSimpleOutlineNodes (this HtmlNodeCollection collection)
         {

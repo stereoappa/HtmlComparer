@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace HtmlComparer.Comparers
 {
-    public class TagComparer : IPageComparer
+    public class TagComparer : IPagesComparer
     {
         private readonly List<ComparedTag> _compareFields;
         public TagComparer(List<ComparedTag> compareFields)
@@ -27,21 +27,22 @@ namespace HtmlComparer.Comparers
     public class FieldCompareResult : ICompareResult
     {
         private PageResponse _response;
+        private List<TagValue> _unequalAttributes { get; }
+
         public FieldCompareResult(PageResponse response, PageResponse pageInfo2, List<TagValue> unequalAttrs)
         {
             _response = response;
-            UnequalAttributes = unequalAttrs;
+            _unequalAttributes = unequalAttrs;
         }
 
-        public List<TagValue> UnequalAttributes { get; }
         public Uri OriginPage => _response.RequestedUri;
 
-        public bool HasErrors => UnequalAttributes.Count() > 0;
+        public bool HasErrors => _unequalAttributes.Count() > 0;
 
         public override string ToString()
         {
             string res = $"\tTAG COMPARER: ";
-            foreach (var f in UnequalAttributes)
+            foreach (var f in _unequalAttributes)
             {
                 res += $"\r\n\tERROR: Field \"{f.Path}\" doesn't correspond on input pages\r\n";
             }

@@ -12,34 +12,37 @@ namespace HtmlComparer
     {
         static async Task Main(string[] args)
         {
-            var sources = ConfigProvider.GetSource();
-            var pages = ConfigProvider.GetPages();
-            var compareTags = ConfigProvider.GetCompareTags();
+            var sources = AppConfigProvider.GetSource();
+            var pages = AppConfigProvider.GetPages();
+            var compareTags = AppConfigProvider.GetCompareTags();
 
-            var comparers = new List<IPageComparer>
-            {
-                new TagComparer(compareTags),
-                new HtmlOutlineComparer()
-            };
-            var compareService = new CompareService(comparers, sources, pages);
+            var comparers = new List<IPagesComparer> { new TagComparer(compareTags), new HtmlOutlineComparer() };
+            var compareService = new CompareService(
+                comparers, 
+                sources.First(x => x.CompareRole == CompareRole.Origin),
+                sources.First(x => x.CompareRole == CompareRole.Target)
+                );
 
             Console.WriteLine("Comparison started..");
 
-            IEnumerable<ICompareResult> comparerResults = null;
+            IEnumerable<ICompareResult> comparerReport = null;
             try
             {
-                comparerResults = await compareService.Compare();
-                var withRewriteRuleResults = await compareService.CheckRewriteRule();
-                comparerResults = comparerResults.Union(withRewriteRuleResults);
+                foreach (var page in pages)
+                {
+                    comparerReport = await compareService.Compare(page);
+                    var withRewriteRuleResults = await compareService.CheckRewriteRule(page);
+                    comparerReport = comparerReport.Union(withRewriteRuleResults);
+                    WriteReport(comparerReport);
+                }
+                
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"FATAL ERROR: {ex.Message}");
             }
 
-            WriteReport(comparerResults);
-
-            Console.WriteLine("Html compared is done!");
+            Console.WriteLine("Html compare had done!");
             Console.ReadKey();
         }
 

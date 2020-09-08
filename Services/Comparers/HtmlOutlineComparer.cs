@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace HtmlComparer.Comparers
 {
-    public class HtmlOutlineComparer : IPageComparer
+    public class HtmlOutlineComparer : IPagesComparer
     {
         private const string headers = "//*[self::h1 or self::h2 or self::h3 or self::h4]";
         public ICompareResult Compare(PageResponse origin, PageResponse target)
