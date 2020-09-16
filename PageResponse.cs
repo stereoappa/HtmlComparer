@@ -6,12 +6,18 @@ namespace HtmlComparer
 {
     public class PageResponse
     {
-        public Uri ReturnedUri { get; set; }
-        public Uri RequestedUri { get; set; }
+        public PageResponse(Uri requestedUri, HtmlDocument returnedHtmlDocument, HttpStatusCode statusCode, Uri returnedUri)
+        {
+            RequestedUri = requestedUri;
+            ReturnedHtmlDocument = returnedHtmlDocument;
+            StatusCode = statusCode;
+            ReturnedUri = returnedUri;
+        }
 
-        public HttpStatusCode StatusCode { get; set; }
-
-        public HtmlDocument ReturnedHtmlDocument { get; set; }
+        public Uri RequestedUri { get; }
+        public HtmlDocument ReturnedHtmlDocument { get; }
+        public HttpStatusCode StatusCode { get; }
+        public Uri ReturnedUri { get; }
 
         public void ThrowIfPageNotFound()
         {

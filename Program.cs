@@ -174,14 +174,14 @@ namespace HtmlComparer
         }
     }
 
-    public enum DisplayMode
+    enum DisplayMode
     {
         Undefined = 0,
         FullReport = 1,
         PageToPage = 2,
         ToNextError = 3
     }
-    public enum NextAction
+    enum NextAction
     {
         GoToNextPage,
         GoToNextErrorPage,

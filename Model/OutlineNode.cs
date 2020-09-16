@@ -6,17 +6,17 @@ namespace HtmlComparer.Model
     {
         public int Position { get; set; }
         public string TagName { get; set; }
-        public string Text { get; set; }
+        public string InnerText { get; set; }
 
         public bool Equals(OutlineNode other)
         {
             if (other is null)
                 return false;
 
-            return this.TagName == other.TagName && this.Text == other.Text && this.Position == other.Position;
+            return this.TagName == other.TagName && this.InnerText == other.InnerText && this.Position == other.Position;
         }
 
         public override bool Equals(object obj) => Equals(obj as OutlineNode);
-        public override int GetHashCode() => (TagName, Text, Position).GetHashCode();
+        public override int GetHashCode() => (TagName, InnerText, Position).GetHashCode();
     }
 }

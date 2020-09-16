@@ -38,7 +38,7 @@ namespace HtmlComparer.Services.Comparers
         }
     }
 
-    public class TagCompareResult : IReportRow
+    class TagCompareResult : IReportRow
     {
         private PageResponse _response;
         private List<TagValue> _unequalAttributes { get; }

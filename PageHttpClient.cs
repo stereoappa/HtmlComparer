@@ -3,7 +3,6 @@ using HtmlComparer.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace HtmlComparer
 {
@@ -30,13 +29,7 @@ namespace HtmlComparer
 
             var doc = await _factory.StartNew(() => _web.Load(uri.ToString()));
 
-            var response = new PageResponse
-            {
-                RequestedUri = uri,
-                ReturnedHtmlDocument = doc,
-                StatusCode = _web.StatusCode,
-                ReturnedUri = _web.ResponseUri
-            };
+            var response = new PageResponse(uri, doc, _web.StatusCode, _web.ResponseUri);
 
             _cache[uri] = response;
 

@@ -13,7 +13,7 @@ namespace HtmlComparer.Services.Checkers
         }
     }
 
-    public class UriRewriteCheckerResult : IReportRow
+    class UriRewriteCheckerResult : IReportRow
     {
         private PageResponse _page;
 
