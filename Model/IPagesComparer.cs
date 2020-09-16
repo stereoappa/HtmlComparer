@@ -2,6 +2,6 @@
 {
     public interface IPagesComparer
     {
-        ICompareResult Compare(PageResponse origin, PageResponse target);
+        IReportRow Compare(PageResponse origin, PageResponse target);
     }
 }

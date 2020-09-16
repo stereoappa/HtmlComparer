@@ -12,69 +12,48 @@ namespace HtmlComparer.Services
         private readonly PageHttpClient _client = new PageHttpClient();
 
         private readonly IEnumerable<IPagesComparer> _comparers;
+        private readonly IEnumerable<IPageChecker> _checkers;
         private readonly Source _originSource;
         private readonly Source _targetSource;
 
-        public CompareService(IEnumerable<IPagesComparer> comparers, Source originSource, Source targetSource)
+        public CompareService(IEnumerable<IPagesComparer> comparers, IEnumerable<IPageChecker> checkers, Source originSource, Source targetSource)
         {
             _comparers = comparers;
+            _checkers = checkers;
             _originSource = originSource;
             _targetSource = targetSource;
         }
 
-        public async Task<IEnumerable<IGrouping<string, ICompareResult>>> GetReport(Page page, bool checkRewriteRule = true, bool useCache = true)
+        public async Task<Report> GetReport(Page page, bool useCache = true)
         {
-            var res = new List<ICompareResult>();
+            var rows = new List<IReportRow>();
 
-            foreach (var comparer in _comparers)
-            {
-                var origin = await _client.GetResponse(
+            var origin = await _client.GetResponse(
                     _originSource.BaseUrl,
                     page.Path,
                     useCache);
+            origin.ThrowIfPageNotFound();
 
-                ThrowIfPageNotFound(origin);
+            var target = await _client.GetResponse(
+                _targetSource.BaseUrl,
+                page.Path,
+                useCache);
+            target.ThrowIfPageNotFound();
 
-                var target = await _client.GetResponse(
-                    _targetSource.BaseUrl,
-                    page.Path,
-                    useCache);
-
-                ThrowIfPageNotFound(target); 
-
-                res.Add(comparer.Compare(origin, target));
+            foreach (var comparer in _comparers)
+            {
+                rows.Add(comparer.Compare(origin, target));
             }
 
-            if (checkRewriteRule)
+            foreach (var checker in _checkers)
             {
-                var withRewriteRuleResults = await CheckRewriteRule(page);
-                res.AddRange(withRewriteRuleResults);
-            }           
-            
-            return res.GroupBy(x => x.OriginPage.LocalPath.ToLower());
-        }
-
-        public async Task<IEnumerable<ICompareResult>> CheckRewriteRule(Page page)
-        {
-            var res = new List<ICompareResult>();
-            if (!_targetSource.ReturnUrlIsLowerCase)
-            {
-                return res;
+                if (_originSource.UseCheckers)
+                    rows.Add(checker.Check(origin));
+                if (_targetSource.UseCheckers)
+                    rows.Add(checker.Check(target));
             }
 
-            var pi = await _client.GetResponse(_targetSource.BaseUrl, page.Path);
-            res.Add(new UriRewriteChecker().Compare(pi));
-
-            return res;
-        }
-        
-
-        private void ThrowIfPageNotFound(PageResponse resp)
-        {
-            if (resp.StatusCode != HttpStatusCode.OK)
-            {
-                throw new WebException($"The page {resp.RequestedUri} is not available.\r\n\tStatus code: {(int)resp.StatusCode}. The page is not accepted for comparison");
-            }
+            return new Report(origin.RequestedUri, rows);
         }
     }
 }

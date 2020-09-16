@@ -18,7 +18,7 @@ namespace HtmlComparer
                 yield return new OutlineNode
                 {
                     Position = i,
-                    Tag = prepareCollection.ElementAt(i).Name,
+                    TagName = prepareCollection.ElementAt(i).Name,
                     Text = Clear(prepareCollection.ElementAt(i).InnerText)
                 };
             }
@@ -27,6 +27,43 @@ namespace HtmlComparer
         private static string Clear(string text)
         {
             return HttpUtility.HtmlDecode(text).Trim();
+        }
+    }
+
+    public static class PageResponseExtensions
+    {
+        public static List<TagValue> FindTagValues(this PageResponse response, List<TagMetadata> compareFields)
+        {
+            string toLowerCase(string arg)
+            {
+                return $"translate(@{arg}, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')";
+            }
+
+            var attrValue = new List<TagValue>();
+            foreach (var f in compareFields)
+            {
+                if (f.ComparedAttrName != null)
+                {
+                    var attr = response.ReturnedHtmlDocument.DocumentNode.SelectSingleNode($"//{f.TagName}[{toLowerCase("name")}='{f.NameAttrValue.ToLower()}']")?.Attributes[f.ComparedAttrName];
+
+                    attrValue.Add(new TagValue
+                    {
+                        Path = $"{f.TagName}/{f.NameAttrValue}/{f.ComparedAttrName}",
+                        Value = HttpUtility.HtmlDecode(attr?.Value ?? null)
+                    });
+                }
+                else
+                {
+                    var attr = response.ReturnedHtmlDocument.DocumentNode.SelectSingleNode($"//{f.TagName}");
+                    attrValue.Add(new TagValue
+                    {
+                        Path = attr.Name,
+                        Value = HttpUtility.HtmlDecode(attr.InnerText)
+                    });
+                }
+            }
+
+            return attrValue;
         }
     }
 }

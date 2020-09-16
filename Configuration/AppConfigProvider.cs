@@ -22,9 +22,9 @@ namespace HtmlComparer.Configuration
                 ?.Distinct();
         }
 
-        public static List<ComparedTag> GetCompareTags()
+        public static List<TagMetadata> GetCompareTags()
         {
-            return ConfigurationManager.GetSection(CompareTagsSection) as List<ComparedTag>;
+            return ConfigurationManager.GetSection(CompareTagsSection) as List<TagMetadata>;
 
         }
     }

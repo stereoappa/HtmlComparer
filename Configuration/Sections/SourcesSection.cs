@@ -20,8 +20,8 @@ namespace HtmlComparer.Configuration.Sections
                 var r = new Source();
 
                 r.BaseUrl = childNode.Attributes["baseUrl"] != null ? childNode.Attributes["baseUrl"].Value : null;
-                r.ReturnUrlIsLowerCase = childNode.Attributes["return-url-lower-case"] != null ?
-                                         childNode.Attributes["return-url-lower-case"].Value == "true" ? true : false
+                r.UseCheckers = childNode.Attributes["use-checkers"] != null ?
+                                         childNode.Attributes["use-checkers"].Value == "true" ? true : false
                                          : false;
 
                 CompareRole cr;

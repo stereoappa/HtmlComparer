@@ -54,24 +54,27 @@
   <ItemGroup>
     <Compile Include="Configuration\AppConfigProvider.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Model\Report.cs" />
+    <Compile Include="Model\IPageChecker.cs" />
     <Compile Include="Model\OutlineNode.cs" />
     <Compile Include="Model\IPagesComparer.cs" />
     <Compile Include="Model\CompareRole.cs" />
+    <Compile Include="Model\TagValue.cs" />
     <Compile Include="Services\Comparers\TagComparer.cs" />
     <Compile Include="Services\Comparers\HtmlOutlineComparer.cs" />
-    <Compile Include="Model\ICompareResult.cs" />
+    <Compile Include="Model\IReportRow.cs" />
     <Compile Include="Model\Page.cs" />
-    <Compile Include="Model\ComparedTag.cs" />
+    <Compile Include="Model\TagMetadata.cs" />
     <Compile Include="Model\Source.cs" />
     <Compile Include="PageHttpClient.cs" />
-    <Compile Include="Model\PageResponse.cs" />
+    <Compile Include="PageResponse.cs" />
     <Compile Include="Configuration\Sections\CompareFieldsSection.cs" />
     <Compile Include="Configuration\Sections\PagesSection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\Sections\SourcesSection.cs" />
     <Compile Include="Services\CompareService.cs" />
-    <Compile Include="Services\UriRewriteChecker.cs" />
+    <Compile Include="Services\Checkers\UriRewriteChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

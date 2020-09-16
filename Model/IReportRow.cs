@@ -2,11 +2,10 @@
 
 namespace HtmlComparer.Model
 {
-    public interface ICompareResult
+    public interface IReportRow
     {
-        Uri OriginPage { get; }
+        Uri PageUri { get; }
         bool HasErrors { get; }
-
         string ToString();
     }
 }

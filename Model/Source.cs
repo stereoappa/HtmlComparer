@@ -6,7 +6,7 @@ namespace HtmlComparer.Model
     {
         public string BaseUrl { get; set; }
         public CompareRole CompareRole { get; set; }
-        public bool ReturnUrlIsLowerCase { get; set; }
+        public bool UseCheckers { get; set; }
     }
 
     

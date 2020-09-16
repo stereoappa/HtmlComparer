@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using HtmlComparer.Services.Comparers;
 using System.Net;
 using HtmlComparer.Configuration;
+using HtmlComparer.Services.Checkers;
 
 namespace HtmlComparer
 {
@@ -37,8 +38,10 @@ namespace HtmlComparer
             var compareTags = AppConfigProvider.GetCompareTags();
 
             var comparers = new List<IPagesComparer> { new TagComparer(compareTags), new HtmlOutlineComparer() };
+            var checkers = new List<IPageChecker> { new UriRewriteChecker() };
             _compareService = new CompareService(
                 comparers,
+                checkers,
                 sources.First(x => x.CompareRole == CompareRole.Origin),
                 sources.First(x => x.CompareRole == CompareRole.Target)
                 );
@@ -46,32 +49,35 @@ namespace HtmlComparer
 
         private static async Task Start(IEnumerable<Page> pages)
         {
-            NextAction nextDoing = NextAction.GoToNextPage;
+            NextAction next = NextAction.GoToNextPage;
 
             for (int i = 0; i < pages.Count(); i++)
             {
-                var page = pages.ElementAt(i);                
+                var page = pages.ElementAt(i);
                 do
                 {
                     try
                     {
                         WritePageTitle(page, i + 1, pages.Count());
-                        WriteReport(await _compareService.GetReport(page, useCache: nextDoing == NextAction.RescanPrevious));
+                        var report = await _compareService.GetReport(page, useCache: next != NextAction.RescanPrevious);
+                        WriteReport(report);
+
+                        if (next == NextAction.GoToNextErrorPage && !report.HasErrors)
+                            continue;
+
                     }
                     catch (WebException ex)
                     {
-                        WriteError($"\tWEB EXCEPTION: {ex.Message}");
+                        WriteError($"\tWEB EXCEPTION: {ex.Message}\r\n");
                     }
                     catch (Exception ex)
                     {
-                        WriteError($"\tFATAL ERROR: {ex.Message}");
+                        WriteError($"\tFATAL ERROR: {ex.Message}\r\n");
                     }
-                    finally
-                    {
-                        nextDoing = NextDoingQuestion();  
-                    }
+
+                    next = NextActionQuestion();
                 }
-                while (nextDoing == NextAction.RescanPrevious);
+                while (next == NextAction.RescanPrevious);
             }
         }
 
@@ -79,22 +85,13 @@ namespace HtmlComparer
         {
             var pageTitlePath = string.IsNullOrEmpty(page.Path) ? "<Root page>" : page.Path;
             var pageTitle = $"\r\nSource[{counter}/{count}]: {pageTitlePath}\r\n";
-          
-            Console.WriteLine($"{pageTitle}");       
+
+            Console.WriteLine($"{pageTitle}");
         }
 
-        private static void WriteReport(IEnumerable<IGrouping<string, ICompareResult>> report)
+        private static void WriteReport(Report report)
         {
-            foreach (var group in report)
-            {
-                var resultForSource = group.Select(g => g);
-                WriteComparerResults(resultForSource);
-            }
-        }
-
-        private static void WriteComparerResults(IEnumerable<ICompareResult> results)
-        {
-            foreach (var r in results)
+            foreach (var r in report.Results)
             {
                 if (r.HasErrors)
                 {
@@ -139,26 +136,29 @@ namespace HtmlComparer
             return mode;
         }
 
-        private static NextAction NextDoingQuestion()
+        private static NextAction NextActionQuestion()
         {
-            Console.WriteLine("Page comparison done.\r\n");
-            NextAction res = NextAction.GoToNextPage;
-
-            if (_mode == DisplayMode.PageByPage)
+            if (_mode == DisplayMode.PageToPage)
             {
-                Console.WriteLine("Rescan previous page - press 'p'\r\n" +
-                    "Go to next page - press any other key\r\n" +
-                    "Go to next error page - press 'n'\r\n");
+                Console.WriteLine("Page comparison done.\r\n" +
+               "Rescan previous page - press 'p'\r\n" +
+               "Go to next error page - press 'n'\r\n" +
+               "Go to next page - press any other key\r\n");
 
-                var keyChar = Console.ReadKey().Key;
-                res = keyChar.ToString().ToLower() == "p" ||
-                    keyChar.ToString().ToLower() == "з" ? NextAction.RescanPrevious :
-                    keyChar.ToString().ToLower() == "n" ||
-                    keyChar.ToString().ToLower() == "т" ? NextAction.GoToNextErrorPage : 
-                    NextAction.GoToNextPage;
+                var keyChar = Console.ReadKey().Key.ToString().ToLower();
+                switch (keyChar)
+                {
+                    case "p":
+                    case "з": return NextAction.RescanPrevious;
+                    case "n":
+                    case "т": return NextAction.GoToNextErrorPage;
+                    default: return NextAction.GoToNextPage;
+                }
             }
-            
-            return res;
+            else
+            {
+                return NextAction.GoToNextPage;
+            }
         }
 
         private static bool RebootFullComparisonQuestion()
@@ -178,13 +178,13 @@ namespace HtmlComparer
     {
         Undefined = 0,
         FullReport = 1,
-        PageByPage = 2,
+        PageToPage = 2,
         ToNextError = 3
     }
     public enum NextAction
     {
-        RescanPrevious,
         GoToNextPage,
-        GoToNextErrorPage
+        GoToNextErrorPage,
+        RescanPrevious
     }
 }

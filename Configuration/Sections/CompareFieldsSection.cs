@@ -9,15 +9,15 @@ namespace HtmlComparer.Configuration.Sections
     {
         public object Create(object parent, object configContext, XmlNode section)
         {
-            List<ComparedTag> myConfigObject = new List<ComparedTag>();
+            List<TagMetadata> myConfigObject = new List<TagMetadata>();
 
             foreach (XmlNode childNode in section.ChildNodes)
             {
-                var r = new ComparedTag();
+                var r = new TagMetadata();
 
-                r.Tag = childNode.Attributes["tag"] != null ? childNode.Attributes["tag"].Value : null;
-                r.Name = childNode.Attributes["name"] != null ? childNode.Attributes["name"].Value : null;
-                r.Attr = childNode.Attributes["attr"] != null ? childNode.Attributes["attr"].Value : null;
+                r.TagName = childNode.Attributes["tag"] != null ? childNode.Attributes["tag"].Value : null;
+                r.NameAttrValue = childNode.Attributes["name"] != null ? childNode.Attributes["name"].Value : null;
+                r.ComparedAttrName = childNode.Attributes["attr"] != null ? childNode.Attributes["attr"].Value : null;
                
                 myConfigObject.Add(r);
 

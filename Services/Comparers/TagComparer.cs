@@ -7,12 +7,12 @@ namespace HtmlComparer.Services.Comparers
 {
     public class TagComparer : IPagesComparer
     {
-        private readonly List<ComparedTag> _compareFields;
-        public TagComparer(List<ComparedTag> compareFields)
+        private readonly List<TagMetadata> _compareFields;
+        public TagComparer(List<TagMetadata> compareFields)
         {
             _compareFields = compareFields;
         }
-        public ICompareResult Compare(PageResponse origin, PageResponse target)
+        public IReportRow Compare(PageResponse origin, PageResponse target)
         {
             var unequalFields = new List<TagValue>();
             var page1Attributes = origin.FindTagValues(_compareFields);
@@ -21,10 +21,24 @@ namespace HtmlComparer.Services.Comparers
             unequalFields.AddRange(page1Attributes.Except(page2Attributes, new TagValueComparer()));
 
             return new TagCompareResult(origin, unequalFields);
-        }  
+        }
+
+        class TagValueComparer : IEqualityComparer<TagValue>
+        {
+            public int GetHashCode(TagValue co)
+            {
+                return 0;
+            }
+
+            public bool Equals(TagValue x1, TagValue x2)
+            {
+                return x1.Path == x2.Path &&
+                     x1.Value?.Trim() == x2.Value?.Trim();
+            }
+        }
     }
 
-    public class TagCompareResult : ICompareResult
+    public class TagCompareResult : IReportRow
     {
         private PageResponse _response;
         private List<TagValue> _unequalAttributes { get; }
@@ -35,7 +49,7 @@ namespace HtmlComparer.Services.Comparers
             _unequalAttributes = unequalAttrs;
         }
 
-        public Uri OriginPage => _response.RequestedUri;
+        public Uri PageUri => _response.RequestedUri;
 
         public bool HasErrors => _unequalAttributes.Count() > 0;
 
@@ -52,6 +66,5 @@ namespace HtmlComparer.Services.Comparers
             }
             return res;
         }
-    }
-
+    }  
 }
