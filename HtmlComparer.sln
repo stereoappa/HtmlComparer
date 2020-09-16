@@ -22,4 +22,12 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E6FD2546-C82D-47EB-BC49-D499EF883642}
 	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://devserver:8080/tfs/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = HtmlComparer.csproj
+		SccLocalPath1 = .
+	EndGlobalSection
 EndGlobal

@@ -2,6 +2,7 @@
 using HtmlComparer.Model;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 
 namespace HtmlComparer
 {
@@ -9,7 +10,7 @@ namespace HtmlComparer
     {
         public static IEnumerable<OutlineNode> ToSimpleOutlineNodes(this HtmlNodeCollection collection, bool exceptEmptyTags = false)
         {
-            var prepareCollection = exceptEmptyTags ? collection.Where(x => x.InnerText.Trim() != string.Empty) :
+            var prepareCollection = exceptEmptyTags ? collection.Where(x => Clear(x.InnerText) != string.Empty) :
                 collection.ToList();
 
             for (int i = 0; i < prepareCollection.Count(); i++)
@@ -18,12 +19,14 @@ namespace HtmlComparer
                 {
                     Position = i,
                     Tag = prepareCollection.ElementAt(i).Name,
-                    Text = prepareCollection.ElementAt(i).InnerText.Trim()
+                    Text = Clear(prepareCollection.ElementAt(i).InnerText)
                 };
-
-
             }
+        }
 
+        private static string Clear(string text)
+        {
+            return HttpUtility.HtmlDecode(text).Trim();
         }
     }
 }

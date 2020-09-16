@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Xml;
 
-namespace HtmlComparer.Sections
+namespace HtmlComparer.Configuration.Sections
 {
     public class CompareFieldsSection : IConfigurationSectionHandler
     {

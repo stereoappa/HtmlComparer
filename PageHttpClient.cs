@@ -21,9 +21,9 @@ namespace HtmlComparer
             _cache = new Dictionary<Uri, PageResponse>();
         }
 
-        public async Task<PageResponse> GetResponse(Uri uri)
+        public async Task<PageResponse> GetResponse(Uri uri, bool useCache = true)
         {
-            if(_cache.ContainsKey(uri))
+            if (useCache && _cache.ContainsKey(uri))
             {
                 return _cache[uri];
             }
@@ -38,13 +38,14 @@ namespace HtmlComparer
                 ReturnedUri = _web.ResponseUri
             };
 
-            _cache.Add(uri, response);
+            _cache[uri] = response;
+
             return response;
         }
 
-        public async Task<PageResponse> GetResponse(string baseUrl, string path)
+        public async Task<PageResponse> GetResponse(string baseUrl, string path, bool useCache = true)
         {
-            return await GetResponse(BuildPath(baseUrl, path));
+            return await GetResponse(BuildPath(baseUrl, path), useCache);
         }
 
         private Uri BuildPath(string domain, string path)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Xml;
 
-namespace HtmlComparer.Sections
+namespace HtmlComparer.Configuration.Sections
 {
     public class PagesSection : IConfigurationSectionHandler
     {
@@ -15,7 +15,7 @@ namespace HtmlComparer.Sections
             {
                 foreach (XmlAttribute attrib in childNode.Attributes)
                 {
-                    myConfigObject.Add(new Page() { Path = attrib.Value });
+                    myConfigObject.Add(new Page(attrib.Value));
                 }
             }
             return myConfigObject;

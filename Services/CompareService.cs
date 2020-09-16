@@ -1,5 +1,4 @@
-﻿using HtmlComparer.Comparers;
-using HtmlComparer.Model;
+﻿using HtmlComparer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +22,7 @@ namespace HtmlComparer.Services
             _targetSource = targetSource;
         }
 
-        public async Task<IEnumerable<IGrouping<string, ICompareResult>>> GetCompareReport(Page page, bool checkRewriteRule = true)
+        public async Task<IEnumerable<IGrouping<string, ICompareResult>>> GetReport(Page page, bool checkRewriteRule = true, bool useCache = true)
         {
             var res = new List<ICompareResult>();
 
@@ -31,13 +30,15 @@ namespace HtmlComparer.Services
             {
                 var origin = await _client.GetResponse(
                     _originSource.BaseUrl,
-                    page.Path);
+                    page.Path,
+                    useCache);
 
                 ThrowIfPageNotFound(origin);
 
                 var target = await _client.GetResponse(
                     _targetSource.BaseUrl,
-                    page.Path);
+                    page.Path,
+                    useCache);
 
                 ThrowIfPageNotFound(target); 
 
@@ -67,11 +68,12 @@ namespace HtmlComparer.Services
             return res;
         }
         
+
         private void ThrowIfPageNotFound(PageResponse resp)
         {
             if (resp.StatusCode != HttpStatusCode.OK)
             {
-                throw new WebException($"Source: {resp.RequestedUri}\r\n\tHTTP ERROR: Status code: {(int)resp.StatusCode}. The page is not accepted for comparison");
+                throw new WebException($"The page {resp.RequestedUri} is not available.\r\n\tStatus code: {(int)resp.StatusCode}. The page is not accepted for comparison");
             }
         }
     }

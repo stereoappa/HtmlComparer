@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 
-namespace HtmlComparer
+namespace HtmlComparer.Configuration
 {
     public static class AppConfigProvider
     {

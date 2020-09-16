@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HtmlComparer.Comparers
+namespace HtmlComparer.Services.Comparers
 {
     public class TagComparer : IPagesComparer
     {
@@ -20,16 +20,16 @@ namespace HtmlComparer.Comparers
 
             unequalFields.AddRange(page1Attributes.Except(page2Attributes, new TagValueComparer()));
 
-            return new FieldCompareResult(origin, unequalFields);
+            return new TagCompareResult(origin, unequalFields);
         }  
     }
 
-    public class FieldCompareResult : ICompareResult
+    public class TagCompareResult : ICompareResult
     {
         private PageResponse _response;
         private List<TagValue> _unequalAttributes { get; }
 
-        public FieldCompareResult(PageResponse origin, List<TagValue> unequalAttrs)
+        public TagCompareResult(PageResponse origin, List<TagValue> unequalAttrs)
         {
             _response = origin;
             _unequalAttributes = unequalAttrs;
@@ -44,11 +44,11 @@ namespace HtmlComparer.Comparers
             string res = $"\tTAG COMPARER: ";
             foreach (var f in _unequalAttributes)
             {
-                res += $"\r\n\tERROR: Field \"{f.Path}\" doesn't correspond on input pages\r\n";
+                res += $"\r\n\tERROR: Tag \"{f.Path}\" doesn't correspond on input pages\r\n";
             }
             if (!HasErrors)
             {
-                res += $"OK: All fields correspond!\r\n";
+                res += $"OK: All tags correspond!\r\n";
             }
             return res;
         }

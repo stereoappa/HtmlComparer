@@ -1,7 +1,7 @@
 ﻿using HtmlComparer.Model;
 using System;
 
-namespace HtmlComparer.Comparers
+namespace HtmlComparer.Services
 {
     public class UriRewriteChecker
     {

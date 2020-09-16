@@ -12,6 +12,10 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -48,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppConfigProvider.cs" />
+    <Compile Include="Configuration\AppConfigProvider.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Model\OutlineNode.cs" />
     <Compile Include="Model\IPagesComparer.cs" />
@@ -61,13 +65,13 @@
     <Compile Include="Model\Source.cs" />
     <Compile Include="PageHttpClient.cs" />
     <Compile Include="Model\PageResponse.cs" />
-    <Compile Include="Sections\CompareFieldsSection.cs" />
-    <Compile Include="Sections\PagesSection.cs" />
+    <Compile Include="Configuration\Sections\CompareFieldsSection.cs" />
+    <Compile Include="Configuration\Sections\PagesSection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sections\SourcesSection.cs" />
+    <Compile Include="Configuration\Sections\SourcesSection.cs" />
     <Compile Include="Services\CompareService.cs" />
-    <Compile Include="Services\Comparers\UriRewriteChecker.cs" />
+    <Compile Include="Services\UriRewriteChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

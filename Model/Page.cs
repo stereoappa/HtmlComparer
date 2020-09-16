@@ -5,8 +5,13 @@ namespace HtmlComparer.Model
 {
     public class Page : IEquatable<Page>
     {
+        public Page(string path)
+        {
+            _path = path;
+        }
+
         private string _path;
-        public string Path { get { return Clear(_path); } set { _path = value; } }
+        public string Path => Clear(_path);
 
         private string Clear(string path)
         {

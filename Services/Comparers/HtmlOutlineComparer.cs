@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace HtmlComparer.Comparers
+namespace HtmlComparer.Services.Comparers
 {
     public class HtmlOutlineComparer : IPagesComparer
     {
@@ -50,7 +50,7 @@ namespace HtmlComparer.Comparers
             for (int i = 0; i < badNodes.Count(); i++)
             {
                 var badNode = badNodes[i];
-                var originNode = originNodes[i];
+                var originNode = originNodes[badNode.Position];
                 var expectedNode = targetNodes.FirstOrDefault(x => x.Position == badNode.Position);
 
                 res += $"\r\n\tERROR: At index {badNode.Position} expected value\r\n\t<{originNode.Tag}: {originNode.Text}>," +
