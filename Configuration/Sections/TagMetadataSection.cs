@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace HtmlComparer.Configuration.Sections
 {
-    public class CompareFieldsSection : IConfigurationSectionHandler
+    public class TagMetadataSection : IConfigurationSectionHandler
     {
         public object Create(object parent, object configContext, XmlNode section)
         {

@@ -62,7 +62,7 @@ namespace HtmlComparer.Services.Comparers
             }
             if (!HasErrors)
             {
-                res += $"OK: All tags correspond!\r\n";
+                res += $"OK: All the tags correspond!\r\n";
             }
             return res;
         }

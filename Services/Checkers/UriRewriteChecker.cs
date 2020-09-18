@@ -40,7 +40,7 @@ namespace HtmlComparer.Services.Checkers
             }
             else
             {
-                res += $"OK: Return Url is lower case. Host: {PageUri.Host}.\r\n";
+                res += $"OK: Returned Url is in lower case. Host: {PageUri.Host}.\r\n";
                 return res;
             }
 

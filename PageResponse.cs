@@ -23,7 +23,7 @@ namespace HtmlComparer
         {
             if (StatusCode != HttpStatusCode.OK)
             {
-                throw new WebException($"The page {RequestedUri} is not available.\r\n\tStatus code: {(int)StatusCode}. The page is not accepted for comparison");
+                throw new WebException($"The page {RequestedUri} is not available.\r\n\tStatus code: {(int)StatusCode}. Comparison is imposible.");
             }
         }
 

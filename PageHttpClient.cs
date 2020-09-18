@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using HtmlComparer.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -4,10 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HtmlComparer.Services.Comparers;
 using System.Net;
 using HtmlComparer.Configuration;
-using HtmlComparer.Services.Checkers;
 
 namespace HtmlComparer
 {
@@ -35,13 +33,10 @@ namespace HtmlComparer
             _mode = DisplayModeQuestion(args);
             _pages = AppConfigProvider.GetPages();
             var sources = AppConfigProvider.GetSource();
-            var compareTags = AppConfigProvider.GetCompareTags();
 
-            var comparers = new List<IPagesComparer> { new TagComparer(compareTags), new HtmlOutlineComparer() };
-            var checkers = new List<IPageChecker> { new UriRewriteChecker() };
             _compareService = new CompareService(
-                comparers,
-                checkers,
+                AppConfigProvider.GetComparers(),
+                AppConfigProvider.GetCheckers(),
                 sources.First(x => x.CompareRole == CompareRole.Origin),
                 sources.First(x => x.CompareRole == CompareRole.Target)
                 );
@@ -121,7 +116,7 @@ namespace HtmlComparer
             string dm;
             if (args == null || args.Length == 0)
             {
-                Console.WriteLine("Choose display mode:\r\n\t1. Full report by all pages\r\n\t2. Page to page report");
+                Console.WriteLine("Choose a display mode:\r\n\t1. Report on all pages\r\n\t2. Page to page report");
                 dm = Console.ReadKey().KeyChar.ToString();
             }
             else
@@ -142,8 +137,8 @@ namespace HtmlComparer
             {
                 Console.WriteLine("Page comparison done.\r\n" +
                "Rescan previous page - press 'p'\r\n" +
-               "Go to next error page - press 'n'\r\n" +
-               "Go to next page - press any other key\r\n");
+               "Go to the next error page - press 'n'\r\n" +
+               "Go to the next page - press any other key\r\n");
 
                 var keyChar = Console.ReadKey().Key.ToString().ToLower();
                 switch (keyChar)
@@ -178,8 +173,7 @@ namespace HtmlComparer
     {
         Undefined = 0,
         FullReport = 1,
-        PageToPage = 2,
-        ToNextError = 3
+        PageToPage = 2
     }
     enum NextAction
     {

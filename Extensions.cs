@@ -8,7 +8,7 @@ namespace HtmlComparer
 {
     public static class HtmlNodesExtensions
     {
-        public static IEnumerable<OutlineNode> ToOutlineNodes(this HtmlNodeCollection collection, bool exceptEmptyTags = false, bool withPosition = true)
+        public static IEnumerable<OutlineNode> ToOutlineNodes(this HtmlNodeCollection collection, bool exceptEmptyTags = false, bool disablePosition = true)
         {
             var prepareCollection = exceptEmptyTags ? collection.Where(x => Clear(x.InnerText) != string.Empty) :
                 collection.ToList();
@@ -17,7 +17,7 @@ namespace HtmlComparer
             {
                 yield return new OutlineNode
                 {
-                    Position = withPosition ? i : 0,
+                    Position = disablePosition ? -1 : i,
                     TagName = prepareCollection.ElementAt(i).Name,
                     InnerText = Clear(prepareCollection.ElementAt(i).InnerText)
                 };
