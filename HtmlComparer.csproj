@@ -37,6 +37,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Dapper.2.0.35\lib\net461\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.11.24.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>packages\HtmlAgilityPack.1.11.24\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
@@ -52,9 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\AppConfigProvider.cs" />
+    <Compile Include="Configuration\Sections\CustomPageProvidersSection.cs" />
+    <Compile Include="Infrastructure.Data\AppConfigModelProvider.cs" />
+    <Compile Include="Infrastructure.Data\DnnPageProvider.cs" />
     <Compile Include="Configuration\Sections\ModulesSection.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Model\ICustomPageProvider.cs" />
     <Compile Include="Model\Report.cs" />
     <Compile Include="Model\IPageChecker.cs" />
     <Compile Include="Model\OutlineNode.cs" />

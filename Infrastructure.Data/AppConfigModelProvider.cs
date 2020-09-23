@@ -5,27 +5,34 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 
-namespace HtmlComparer.Configuration
+namespace HtmlComparer.Infrastructure.Data
 {
-    public static class AppConfigProvider
+    public class AppConfigModelProvider
     {
+        private const string ModulesSection = "modules";
         private const string SourcesSection = "sources";
         private const string PagesSection = "pages";
+        private const string CustomPageProviders = "customPageProviders";
 
-        public static IEnumerable<Source> GetSource()
+        public IEnumerable<Source> GetSource()
         {
-            return ConfigurationManager.GetSection(SourcesSection) as List<Source>;
+            return ConfigurationManager.GetSection(SourcesSection) as IEnumerable<Source>;
         }
 
-        public static IEnumerable<Page> GetPages()
+        public IEnumerable<Page> GetPages()
         {
-            return (ConfigurationManager.GetSection(PagesSection) as List<Page>)
+            return (ConfigurationManager.GetSection(PagesSection) as IEnumerable<Page>)
                 ?.Distinct();
         }
-
-        public static IEnumerable<IPagesComparer> GetComparers()
+        public IEnumerable<ICustomPageProvider> GetCustomPageProviders()
         {
-            var modules = ConfigurationManager.GetSection("modules") as ModulesSection;
+            return (ConfigurationManager.GetSection(CustomPageProviders) as IEnumerable<ICustomPageProvider>);
+        }
+
+
+        public IEnumerable<IPagesComparer> GetComparers()
+        {
+            var modules = ConfigurationManager.GetSection(ModulesSection) as ModulesSection;
 
             var res = new List<IPagesComparer>();
             for (int i = 0; i < modules.Comparers.Count; i++)
@@ -41,9 +48,9 @@ namespace HtmlComparer.Configuration
             return res;
         }
 
-        public static IEnumerable<IPageChecker> GetCheckers()
+        public IEnumerable<IPageChecker> GetCheckers()
         {
-            var modules = ConfigurationManager.GetSection("modules") as ModulesSection;
+            var modules = ConfigurationManager.GetSection(ModulesSection) as ModulesSection;
 
             var res = new List<IPageChecker>();
             for (int i = 0; i < modules.Checkers.Count; i++)

@@ -27,13 +27,13 @@ namespace HtmlComparer.Services
 
             var origin = await _client.GetResponse(
                     _originSource.BaseUrl,
-                    page.Path,
+                    page.LocalPath,
                     useCache);
             origin.ThrowIfPageNotFound();
 
             var target = await _client.GetResponse(
                 _targetSource.BaseUrl,
-                page.Path,
+                page.LocalPath,
                 useCache);
             target.ThrowIfPageNotFound();
 

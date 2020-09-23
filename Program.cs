@@ -5,45 +5,56 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
-using HtmlComparer.Configuration;
+using HtmlComparer.Infrastructure.Data;
 
 namespace HtmlComparer
 {
     class Program
     {
-        private static DisplayMode _mode = DisplayMode.Undefined;
+        private static AppConfigModelProvider _config;
         private static CompareService _compareService;
-        private static IEnumerable<Page> _pages;
+        private static List<Page> _pages;
+        
         static async Task Main(string[] args)
         {
             do
             {
                 Console.Clear();
                 Init(args);
+                var mode = DisplayModeQuestion(args);
                 Console.Clear();
 
-                Console.WriteLine("Comparison start..");
-                await Start(_pages);
+                await Start(_pages, mode);
             }
             while (RebootFullComparisonQuestion());
         }
 
         private static void Init(string[] args)
         {
-            _mode = DisplayModeQuestion(args);
-            _pages = AppConfigProvider.GetPages();
-            var sources = AppConfigProvider.GetSource();
+            _config = new AppConfigModelProvider();
+            _pages = _config.GetPages().ToList();
+            _config.GetCustomPageProviders()
+                   .ToList()
+                   .ForEach(x => _pages.AddRange(x.GetPages())); 
+            
+            var sources = _config.GetSource();
 
             _compareService = new CompareService(
-                AppConfigProvider.GetComparers(),
-                AppConfigProvider.GetCheckers(),
+                _config.GetComparers(),
+                _config.GetCheckers(),
                 sources.First(x => x.CompareRole == CompareRole.Origin),
                 sources.First(x => x.CompareRole == CompareRole.Target)
                 );
         }
 
-        private static async Task Start(IEnumerable<Page> pages)
+        private static async Task Start(IEnumerable<Page> pages, DisplayMode mode)
         {
+            if (mode == DisplayMode.ViewPageList)
+            {
+                WritePageList(pages);
+                return;
+            }
+
             NextAction next = NextAction.GoToNextPage;
 
             for (int i = 0; i < pages.Count(); i++)
@@ -70,7 +81,7 @@ namespace HtmlComparer
                         WriteError($"\tFATAL ERROR: {ex.Message}\r\n");
                     }
 
-                    next = NextActionQuestion();
+                    next = GetNextAction(mode);
                 }
                 while (next == NextAction.RescanPrevious);
             }
@@ -78,7 +89,7 @@ namespace HtmlComparer
 
         private static void WritePageTitle(Page page, int counter, int count)
         {
-            var pageTitlePath = string.IsNullOrEmpty(page.Path) ? "<Root page>" : page.Path;
+            var pageTitlePath = string.IsNullOrEmpty(page.LocalPath) ? "<Root page>" : page.LocalPath;
             var pageTitle = $"\r\nSource[{counter}/{count}]: {pageTitlePath}\r\n";
 
             Console.WriteLine($"{pageTitle}");
@@ -99,6 +110,16 @@ namespace HtmlComparer
             }
         }
 
+        private static void WritePageList(IEnumerable<Page> pages)
+        {
+            for (int i = 0; i < pages.Count(); i++)
+            {
+                var page = pages.ElementAt(i);
+                var pageTitlePath = string.IsNullOrEmpty(page.LocalPath) ? "<Root page>" : page.LocalPath;
+                Console.WriteLine((i + 1) + ". " + pageTitlePath + "\r\n");
+            }
+        }
+
         private static void WriteError(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -108,15 +129,13 @@ namespace HtmlComparer
 
         private static DisplayMode DisplayModeQuestion(string[] args = null)
         {
-            if (_mode != DisplayMode.Undefined)
-            {
-                return _mode;
-            }
-
             string dm;
             if (args == null || args.Length == 0)
             {
-                Console.WriteLine("Choose a display mode:\r\n\t1. Report on all pages\r\n\t2. Page to page report");
+                Console.WriteLine("Choose a display mode:" +
+                    "\r\n\t1. Report on all pages" +
+                    "\r\n\t2. Page to page report" +
+                    "\r\n\t3. View page list");
                 dm = Console.ReadKey().KeyChar.ToString();
             }
             else
@@ -131,9 +150,9 @@ namespace HtmlComparer
             return mode;
         }
 
-        private static NextAction NextActionQuestion()
+        private static NextAction GetNextAction(DisplayMode mode)
         {
-            if (_mode == DisplayMode.PageToPage)
+            if (mode == DisplayMode.PageToPage)
             {
                 Console.WriteLine("Page comparison done.\r\n" +
                "Rescan previous page - press 'p'\r\n" +
@@ -158,7 +177,7 @@ namespace HtmlComparer
 
         private static bool RebootFullComparisonQuestion()
         {
-            Console.WriteLine("All pages comparison done!\r\n" +
+            Console.WriteLine("Completed successfully!\r\n" +
                 "Rescan all pages - press 'r'");
 
             var keyChar = Console.ReadKey().Key;
@@ -173,7 +192,8 @@ namespace HtmlComparer
     {
         Undefined = 0,
         FullReport = 1,
-        PageToPage = 2
+        PageToPage = 2,
+        ViewPageList = 3
     }
     enum NextAction
     {

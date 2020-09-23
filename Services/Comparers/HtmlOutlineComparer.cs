@@ -35,7 +35,7 @@ namespace HtmlComparer.Services.Comparers
                 return false;
 
             return _disabledOutlinePositionPages
-                .Any(x => origin.RequestedUri.LocalPath.ToLower() == x.Path.ToLower());
+                .Any(x => origin.RequestedUri.LocalPath.ToLower() == x.LocalPath.ToLower());
         }
 
         class HtmlOutlineCompareResult : IReportRow
